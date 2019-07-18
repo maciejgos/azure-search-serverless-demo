@@ -7,30 +7,49 @@ using Microsoft.Azure.WebJobs.Extensions.Http;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using Microsoft.Azure.Search;
+using Microsoft.Azure.Search.Models;
+using System.Linq;
 
 namespace Crossplatform.EventsApp.Functions
 {
-    public static class LookupEventsFunction
+    // TODO : Create binding for Azure Search
+    public class LookupEventsFunction
     {
+        private static string SearchServiceName = Environment.GetEnvironmentVariable("SearchServiceName");
+        private static string ApiKey = Environment.GetEnvironmentVariable("SearchServiceApiKey");
+
+        private static ISearchIndexClient _searchIndexClient;
+        private const string IndexName = "eventstable-index";
+
+        public LookupEventsFunction()
+        {
+            _searchIndexClient = CreateSearchIndexClient();
+        }
+
         [FunctionName("LookupEventsFunction")]
-        public static async Task<IActionResult> Run(
-            [HttpTrigger(AuthorizationLevel.Function, "get", "post", Route = null)] HttpRequest req,
+        public async Task<IActionResult> Run(
+            [HttpTrigger(AuthorizationLevel.Function, "get", Route = "events/search={searchPhrase}")] HttpRequest req,
             ExecutionContext context,
+            string searchPhrase,
             ILogger log)
         {
-            // log.LogInformation("C# HTTP trigger function processed a request.");
-
-            // string name = req.Query["name"];
-
-            // string requestBody = await new StreamReader(req.Body).ReadToEndAsync();
-            // dynamic data = JsonConvert.DeserializeObject(requestBody);
-            // name = name ?? data?.name;
-
-            // return name != null
-            //     ? (ActionResult)new OkObjectResult($"Hello, {name}")
-            //     : new BadRequestObjectResult("Please pass a name on the query string or in the request body");
-
             log.LogInformation($"Start trigger {nameof(context.FunctionName)}");
+
+            var parameters = new SearchParameters()
+            {
+                Select = new[] { "RowKey", "Title", "Address", "Place", "Country" }
+            };
+            var resultObject = await _searchIndexClient.Documents.SearchAsync(searchPhrase, parameters);
+            if (resultObject.Results.Any())
+                return new OkObjectResult(resultObject.Results);
+            else
+                return new BadRequestResult();
+        }
+
+        private SearchIndexClient CreateSearchIndexClient()
+        {
+            return new SearchIndexClient(SearchServiceName, IndexName, new SearchCredentials(ApiKey));
         }
     }
 }
