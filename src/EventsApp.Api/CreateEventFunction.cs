@@ -9,8 +9,10 @@ using Newtonsoft.Json;
 using Microsoft.WindowsAzure.Storage.Table;
 using System.Collections.Generic;
 using Microsoft.WindowsAzure.Storage;
+using Crossplatform.EventsApp.Domain.ValueObjects;
+using Crossplatform.EventsApp.Domain.Event;
 
-namespace Crossplatform.Functions
+namespace Crossplatform.EventsApp.Functions
 {
     public static class CreateEventFunction
     {
@@ -84,22 +86,6 @@ namespace Crossplatform.Functions
                 Country = command.Country
             };
         }
-    }
-
-    internal class EventModel : TableEntity
-    {
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public string Address { get; set; }
-        public string Place { get; set; }
-        public string Country { get; set; }
-    }
-
-    internal class ResultObject
-    {
-        public bool Success { get; internal set; }
-        public object Result { get; internal set; }
-        public string Message { get; internal set; }
     }
 
     internal class CreateEventCommand
