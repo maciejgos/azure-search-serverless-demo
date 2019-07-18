@@ -88,11 +88,11 @@ namespace Crossplatform.Functions
 
     internal class EventModel : TableEntity
     {
-        public string Title { get; internal set; }
-        public string Description { get; internal set; }
-        public string Address { get; internal set; }
-        public string Place { get; internal set; }
-        public string Country { get; internal set; }
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public string Address { get; set; }
+        public string Place { get; set; }
+        public string Country { get; set; }
     }
 
     internal class ResultObject
