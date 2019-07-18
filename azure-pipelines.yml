@@ -10,11 +10,11 @@ pool:
   vmImage: 'ubuntu-latest'
 
 steps:
-- task: DotNetCoreCLI@0
+- task: DotNetCoreCLI@2
   inputs:
     command: restore
     projects: '**/*.csproj'
-- task: DotNetCoreCLI@0
+- task: DotNetCoreCLI@2
   inputs:
     command: build
     projects: '**/*.csproj'
