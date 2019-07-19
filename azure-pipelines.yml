@@ -25,6 +25,7 @@ steps:
   displayName: 'Publish'
   inputs:
     command: publish
+    projects: '**/*.csproj'
     arguments: '--output $(Build.ArtifactStagingDirectory)'
     publishWebProjects: false
 
