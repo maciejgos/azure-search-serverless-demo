@@ -28,13 +28,6 @@ steps:
     projects: '**/*.csproj'
     arguments: '--output $(Build.StagingDirectory)'
     publishWebProjects: false
-- task: ArchiveFiles@2
-  inputs:
-    rootFolderOrFile: '$(Build.StagingDirectory)'
-    includeRootFolder: true
-    archiveType: 'zip'
-    archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'
-    replaceExistingArchive: true
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
